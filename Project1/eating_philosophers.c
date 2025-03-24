@@ -10,6 +10,7 @@
 
 int *state;                 // array to store the state of each philosopher
 int philosophers_number;    // number of philosophers
+pthread_mutex_t *mutexes;   // Mutexes for each philosopher that will protect the access to their state
 
 // Print_state function is responsible for printing the current state of a philosopher
 void print_state(int philosopher, int state) {
@@ -24,18 +25,21 @@ void print_state(int philosopher, int state) {
 
 // Function that simulates a philosopher taking the forks - starting to eat
 void take_forks(int philosopher) {
-
+    int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
+    int right_philosopher = (philosopher + 1) % philosophers_number;
 }
 
 
 // Function that simulates a philosopher putting down the forks after eating
 void put_forks(int philosopher) {
-
+    int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
+    int right_philosopher = (philosopher + 1) % philosophers_number;
 }
 
 // Function that checks if a philosopher can start eating - both forks are available
 void check(int philosopher) {
-
+    int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
+    int right_philosopher = (philosopher + 1) % philosophers_number;
 }
 
 int main(int argc, char *argv[]) {
