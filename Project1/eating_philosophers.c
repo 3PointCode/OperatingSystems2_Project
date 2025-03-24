@@ -28,6 +28,19 @@ void print_state(int philosopher, int state) {
 void take_forks(int philosopher) {
     int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
     int right_philosopher = (philosopher + 1) % philosophers_number;
+
+    pthread_mutex_lock(&mutexes[philosopher]);  // locking the philosopher's mutex to change its state and wait for forks
+    state[philosopher] = HUNGRY;                // philosopher becomes hungry and wants to eat
+    print_state(philosopher, HUNGRY);
+
+    check(philosopher);                         // check if the philosopher can start eating
+
+    // if the philosopher cannot eat immediately, they wait on their condition variable to be met
+    while (state[philosopher] != EATING) {
+        pthread_cond_wait(&conds[philosopher], &mutexes[philosopher]);
+    }
+
+    pthread_mutex_unlock(&mutexes[philosopher]); // unlock the philosopher's mutex after he is ready to eat
 }
 
 
