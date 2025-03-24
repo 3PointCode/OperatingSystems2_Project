@@ -11,6 +11,7 @@
 int *state;                 // array to store the state of each philosopher
 int philosophers_number;    // number of philosophers
 pthread_mutex_t *mutexes;   // Mutexes for each philosopher that will protect the access to their state
+pthread_cond_t *conds;      // Condition variables for each philosopher to manage waiting for forks
 
 // Print_state function is responsible for printing the current state of a philosopher
 void print_state(int philosopher, int state) {
@@ -40,6 +41,13 @@ void put_forks(int philosopher) {
 void check(int philosopher) {
     int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
     int right_philosopher = (philosopher + 1) % philosophers_number;
+
+    // check if the philosopher can eat, philosophers to his right and left cannot be eating
+    if (state[philosopher] == HUNGRY && state[left_philosopher] != EATING && state[right_philosopher] != EATING) {
+        state[philosopher] == EATING;               // philosopher can eat
+        print_state(philosopher, EATING);
+        pthread_cond_signal(&conds[philosopher]);   // signal the philosopher to proceed - change their state and start eating
+    }
 }
 
 int main(int argc, char *argv[]) {
