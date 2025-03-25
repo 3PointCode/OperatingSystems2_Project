@@ -73,6 +73,27 @@ void check(int philosopher) {
     }
 }
 
-int main(int argc, char *argv[]) {
+// This function simulates the lifecycle of a philosopher in which he reapeats three activities - thinking, being hungry, eating
+void* philosophers_life(void *number) {
+    int philosopher = *(int *) number;  // casting the passed void pointer to an int and assign it to philosopher
 
+    while (1) {
+        sleep(rand() % 5);  // thinking phase - the philosopher thinks for a random amount of time
+
+        take_forks(philosopher); // hungry phase - the philosopher is hungry, try to take forks and start eating
+
+        sleep(rand() % 5); // eating phase - the philosopher is eating for a random amount of time
+
+        put_forks(philosopher); // after eating for a random amount of time, the philosopher puts down the forks and starts thinking again
+    }
+
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    // checking if there is a correct numbers of arguments passed in when executing the program
+    if (argc != 2) {
+        printf("How to use: %s <number_of_philosophers>\n", argv[0]);
+        return 1;
+    }
 }
