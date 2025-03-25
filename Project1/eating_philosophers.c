@@ -96,4 +96,38 @@ int main(int argc, char *argv[]) {
         printf("How to use: %s <number_of_philosophers>\n", argv[0]);
         return 1;
     }
+
+    philosophers_number = atoi(argv[1]); // set the number of philosophers based on user input
+
+    // allocate the memory for the philosopher threads, array of states, mutexes and condition variables
+    pthread_t *threads = (pthread_t*)malloc(sizeof(pthread_t) * philosophers_number);
+    state = (int*)malloc(sizeof(int) * philosophers_number);
+    mutexes = (pthread_mutex_t*)malloc(sizeof(pthread_mutex_t) * philosophers_number);
+    conds = (pthread_cond_t*)malloc(sizeof(pthread_cond_t) * philosophers_number);
+
+    // initialize the state, mutex and condition variable for each philosopher  
+    for (int i = 0; i < philosophers_number; i++) {
+        state[i] = THINKING;
+        pthread_mutex_init(&mutexes[i], NULL);
+        pthread_cond_init(&conds[i], NULL);
+    }
+
+    int* philosopophers_nums = (int*)malloc(sizeof(int) * philosophers_number); // array that will store the philosopher numbers for threading
+
+    for (int i = 0; i < philosophers_number; i++) {
+        philosopophers_nums[i] = i;
+        pthread_create(&threads[i], NULL, philosophers_life, &philosopophers_nums[i]);  // create a thread for each philosopher
+    }
+
+    for (int i = 0; i < philosophers_number; i++) {
+        pthread_join(threads[i], NULL); // wait for all philosopher threads to finish
+    }
+
+    free(threads);
+    free(state);
+    free(mutexes);
+    free(conds);
+    free(philosopophers_nums);
+
+    return 0;
 }
