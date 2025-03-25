@@ -48,6 +48,16 @@ void take_forks(int philosopher) {
 void put_forks(int philosopher) {
     int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
     int right_philosopher = (philosopher + 1) % philosophers_number;
+
+    pthread_mutex_lock(&mutexes[philosopher]);  // locking the philosopher mutex to change his state
+    state[philosopher] = THINKING;
+    print_state(philosopher, THINKING);
+
+    // check the left and right philosopher to see if they can start eating
+    check(left_philosopher);
+    check(right_philosopher);
+
+    pthread_mutex_unlock(&mutexes[philosopher]); // unlock the philosophers mutex after updating the state
 }
 
 // Function that checks if a philosopher can start eating - both forks are available
