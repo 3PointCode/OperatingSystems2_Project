@@ -20,7 +20,20 @@ void print_state(int philosopher, int state) {
     } else if (state == HUNGRY) {
         printf("Philosopher %d is hungry\n", philosopher);
     } else {
-        printf("Philosopher %d is eating\n");
+        printf("Philosopher %d is eating\n", philosopher);
+    }
+}
+
+// Function that checks if a philosopher can start eating - both forks are available
+void check(int philosopher) {
+    int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
+    int right_philosopher = (philosopher + 1) % philosophers_number;
+
+    // check if the philosopher can eat, philosophers to his right and left cannot be eating
+    if (state[philosopher] == HUNGRY && state[left_philosopher] != EATING && state[right_philosopher] != EATING) {
+        state[philosopher] = EATING;               // philosopher can eat
+        print_state(philosopher, EATING);
+        pthread_cond_signal(&conds[philosopher]);   // signal the philosopher to proceed - change their state and start eating
     }
 }
 
@@ -58,19 +71,6 @@ void put_forks(int philosopher) {
     check(right_philosopher);
 
     pthread_mutex_unlock(&mutexes[philosopher]); // unlock the philosophers mutex after updating the state
-}
-
-// Function that checks if a philosopher can start eating - both forks are available
-void check(int philosopher) {
-    int left_philosopher = (philosopher + philosophers_number - 1) % philosophers_number;
-    int right_philosopher = (philosopher + 1) % philosophers_number;
-
-    // check if the philosopher can eat, philosophers to his right and left cannot be eating
-    if (state[philosopher] == HUNGRY && state[left_philosopher] != EATING && state[right_philosopher] != EATING) {
-        state[philosopher] == EATING;               // philosopher can eat
-        print_state(philosopher, EATING);
-        pthread_cond_signal(&conds[philosopher]);   // signal the philosopher to proceed - change their state and start eating
-    }
 }
 
 // This function simulates the lifecycle of a philosopher in which he reapeats three activities - thinking, being hungry, eating
