@@ -66,3 +66,28 @@ This project simulates the **Dining Philosophers Problem** using **pthreads** fo
     * EATING (2) - the philosopher is eating.
 * **mutexes[]** - an array of mutexes where each philosopher has an associated mutex that ensures only one philosopher can access a fork at any given time.
 * **conds[]** - an array of condition variables, each associated with a philosopher. When a philosopher is hungry but cannot eat, they wait on their respective condition variable until the forks become available.
+
+## Problem breakdown
+The Dining Philosophers Problem models a situation where a limited number of resources (forks) are shared by multiple processes (the philosophers).
+The challenge is to desing a solution where philosophers can eat without causing deadlock or starvation.
+* **Deadlock**: This can happen when all philosophers pick up one fork simultaneously and wait for the second fork, leading to a cycle of waiting.
+* **Starvation**: This occurs if some philosophers are blocked from eating while others are able to proceed.
+
+### Solution approach
+1. **Mutexes**: to ensure mutual exclusion when accessing shared resources (forks), each fork is protected by a mutex. This ensures that only one philosopher can pick up a particular fork at any given time.
+2. **Condition variables**: these are used to managed philosopher states efficiently. When a philosopher is hungry but can't pick up both forks, they will wait on the condition variable until they are allowed to proceed.
+
+## Threads and what they represent
+**Philosopher threads**: Each philosopher runs in its own thread. A philosopher can be in one of the following states:
+* Thinking: the philosopher is not using any resources and is simply thinking.
+* Hungry: the philosopher wants to eat but is waiting for the forks to become available.
+* Eating: the philosopher has picked up both forks and is eating.
+
+### Synchronization and critical sections
+Critical sections refer to parts of the code that access shared resources (forks) and must be synchronized to prevent race conditions.
+1. **Fork mutexes**: each fork is protected by a mutex, ensuring that no two philosophers can simultaneously use the same fork.
+2. **Philosopher mutexes**: each philosopher's state is protected by a mutex to ensure that only one philosopher can modify their state at a time
+
+### Critical sections
+* **Fork Access**: A philosopher can only pick up forks if his left and right neighbours are not eating. This is ensured by the state of the neighbours before allowing a philosopher to proceed with eating.
+* **Philosopher State**: The state of each philosopher is updated with a mutex and the program uses a condition variable to allow philosophers to wait when they are hungry and notify them when they can start eating.
